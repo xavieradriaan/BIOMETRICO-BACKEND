@@ -6,6 +6,7 @@ from collections import defaultdict
 from datetime import datetime
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+import time
 
 app = Flask(__name__)
 CORS(app)  # Habilitar CORS para todas las rutas
@@ -49,7 +50,8 @@ def get_attendance_events(search_result_position, start_time, end_time):
 def get_all_users():
     all_users = []
     search_result_position = 0
-    while True:
+    retries = 3
+    while retries > 0:
         data = {
             "UserInfoSearchCond": {
                 "searchID": "1",
@@ -75,8 +77,18 @@ def get_all_users():
         else:
             print(f"Error: {response.status_code}")
             print(response.text)
-            break
+            retries -= 1
+            time.sleep(5)  # Esperar 5 segundos antes de reintentar
     return all_users
+
+# Función para verificar si hay "N/A" en el archivo CSV de nombres
+def has_na_in_names(csv_filename_names):
+    with open(csv_filename_names, mode='r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            if row["Name"] == "N/A":
+                return True
+    return False
 
 @app.route('/attendance', methods=['GET'])
 def get_attendance():
@@ -135,17 +147,22 @@ def get_attendance():
     print(f"Los resultados se han exportado a {csv_filename}")
 
     # Obtener todos los usuarios y exportar a un archivo CSV
-    all_users = get_all_users()
     csv_filename_names = 'nombres_employeeid.csv'
-    with open(csv_filename_names, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(["Employee ID", "Name"])
-        for user in all_users:
-            employee_id = user.get('employeeNoString', user.get('employeeNo', 'N/A'))
-            name = user.get('name', 'N/A')
-            writer.writerow([employee_id, name])
+    while True:
+        all_users = get_all_users()
+        with open(csv_filename_names, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(["Employee ID", "Name"])
+            for user in all_users:
+                employee_id = user.get('employeeNoString', user.get('employeeNo', 'N/A'))
+                name = user.get('name', 'N/A')
+                writer.writerow([employee_id, name])
+        print(f"Los resultados se han exportado a {csv_filename_names}")
 
-    print(f"Los resultados se han exportado a {csv_filename_names}")
+        # Verificar si hay "N/A" en el archivo CSV de nombres
+        if not has_na_in_names(csv_filename_names):
+            break
+        print("Se encontraron 'N/A' en los nombres, reintentando la obtención de nombres...")
 
     # Crear un diccionario de nombres de empleados
     employee_names = {}
