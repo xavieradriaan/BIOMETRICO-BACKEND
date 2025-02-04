@@ -1,4 +1,4 @@
-#!/home/ubuntu/serverFlask/venv/bin/python3
+#!/Users/xavierandrade/BIOMETRICO-BACKEND/venv/bin/python3.13
 # -*- coding: utf-8 -*-
 import re
 import sys
