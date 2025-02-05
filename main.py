@@ -12,8 +12,8 @@ app = Flask(__name__)
 CORS(app)  # Habilitar CORS para todas las rutas
 
 # Configuración de la solicitud para eventos de asistencia
-attendance_url = 'http://192.168.42.202/ISAPI/AccessControl/AcsEvent?format=json'
-user_info_url = 'http://192.168.42.202/ISAPI/AccessControl/UserInfo/Search?format=json'
+attendance_url = 'http://192.168.42.100/ISAPI/AccessControl/AcsEvent?format=json'
+user_info_url = 'http://192.168.42.100/ISAPI/AccessControl/UserInfo/Search?format=json'
 headers = {'Content-Type': 'application/json'}
 auth = HTTPDigestAuth('admin', 'citell2024.')
 search_id = "1"
