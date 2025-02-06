@@ -17,7 +17,7 @@ user_info_url = 'http://192.168.42.100/ISAPI/AccessControl/UserInfo/Search?forma
 headers = {'Content-Type': 'application/json'}
 auth = HTTPDigestAuth('admin', 'citell2024.')
 search_id = "1"
-max_results = 800
+max_results = 600
 
 # Función para obtener eventos de asistencia
 def get_attendance_events(search_result_position, start_time, end_time):
@@ -56,7 +56,7 @@ def get_all_users():
             "UserInfoSearchCond": {
                 "searchID": "1",
                 "searchResultPosition": search_result_position,
-                "maxResults": 180  # Ajusta este valor según sea necesario
+                "maxResults": 100  # Ajusta este valor según sea necesario
             }
         }
         response = requests.post(user_info_url, headers=headers, json=data, auth=auth)
