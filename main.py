@@ -17,7 +17,9 @@ user_info_url = 'http://192.168.42.100/ISAPI/AccessControl/UserInfo/Search?forma
 headers = {'Content-Type': 'application/json'}
 auth = HTTPDigestAuth('admin', 'citell2024.')
 search_id = "1"
-max_results = 600
+max_results = 500 
+#EN MAX_RESULTS LA REGLA: 100 EMPLEADOS X 2 EVENTOS AL DÍA (Entrada y Salida) =  200 resultados por día depende del rango en el front, en este caso es 3 días. A
+#JUSTAR ACORDE A LO QUE SE REQUIERE (MAXIMO 500)
 
 # Función para obtener eventos de asistencia
 def get_attendance_events(search_result_position, start_time, end_time):
@@ -30,6 +32,7 @@ def get_attendance_events(search_result_position, start_time, end_time):
             "minor": 38,
             "startTime": start_time,
             "endTime": end_time
+            "eventAttribute": "attendance"
         }
     }
     response = requests.post(attendance_url, headers=headers, json=data, auth=auth)
