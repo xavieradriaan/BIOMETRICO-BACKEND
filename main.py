@@ -32,7 +32,7 @@ def get_attendance_events(search_result_position, start_time, end_time):
             "minor": 38,
             "startTime": start_time,
             "endTime": end_time,
-           "eventAttribute": "attendance"
+ ## aún no está probado usarlo en dev:          "eventAttribute": "attendance"
         }
     }
     response = requests.post(attendance_url, headers=headers, json=data, auth=auth)
